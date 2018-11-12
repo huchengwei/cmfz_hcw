@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.AlbumDao">
+
+    <resultMap id="queryAllResultMap" type="Album">
+        <id property="id" column="aid"></id>
+        <result property="title" column="atitle"></result>
+        <collection property="children" ofType="Chapter">
+            <id property="id" column="cid"></id>
+            <result property="title" column="ctitle"></result>
+            <result property="bulk" column="cbulk"></result>
+            <result property="downPath" column="cdownPath"></result>
+            <result property="duration" column="cduration"></result>
+        </collection>
+    </resultMap>
+
+    <select id="queryByPage" resultMap="queryAllResultMap">
+        select a.id aid,a.title atitle,
+                c.id cid,c.title ctitle,c.bulk cbulk,c.downPath cdownPath,c.duration cduration
+        from album a left join chapter c
+        on a.id=c.album_id limit #{0},#{1}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        select count(id) from album
+    </select>
+
+    <insert id="insert">
+        insert into album(id,title,coverPic,author,broadCast,brief,date) values (#{id},#{title},#{coverPic},#{author},#{broadCast},#{brief},#{date})
+    </insert>
+</mapper>
